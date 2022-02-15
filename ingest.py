@@ -142,6 +142,7 @@ class Ingest:
         logger = logging.getLogger("Ingest")  # definiujemy którego loggera używam w tej klasie
         logger.info("Ingesting from csv")
 
+        # read file
 
         logger.info("DF created")
         logger.warning("DF created with warning")
