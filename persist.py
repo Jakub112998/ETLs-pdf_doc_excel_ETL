@@ -13,7 +13,7 @@ class Persist:
             logger = logging.getLogger("Persist")
             logger.info('Persisting')
             logger.error("dummy error in Persisting")
-            df.coalesce(1).write.option("header", "true").csv("transformed")  # data is stored in Hive table
+            # df.coalesce(1).write.option("header", "true").csv("transformed")  # data is stored in Hive table
         except Exception as e:
             logger.error("An error occured while persisting data > " + str(e))
             raise Exception(

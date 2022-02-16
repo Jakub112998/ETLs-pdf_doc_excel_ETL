@@ -14,5 +14,4 @@ class Transform:
         logger.warning("Warning in Transforming")
 
         # drop all the rows having null values
-        df1 = df.na.drop()
-        return df1
+        return df
