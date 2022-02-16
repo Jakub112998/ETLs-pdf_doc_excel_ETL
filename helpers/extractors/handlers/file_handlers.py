@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-# from typing import Protocol
 import pandas as pd
 
 # pdf
@@ -12,37 +11,10 @@ import tabula
 import xlrd
 
 
-class BaseSource(ABC):
-    """Basic representation of a Extractor class."""
-    """
-    Event handler which maintains a state machine for each path
-    seen. When a file goes through the create, write, close sequence,
-    notifies the created handler.
-    """
-
+class PDFExtractor():
     def __init__(self, destination):
         self._destination = destination
-
-    @abstractmethod
-    def _extract_text(self):
         pass
-
-    @abstractmethod
-    def _extract_tables(self):
-        pass
-
-    @abstractmethod
-    def _extract_images(self):
-        pass
-
-    @abstractmethod
-    def process(self):
-        pass
-
-
-class PDFExtractor(BaseSource):
-    def __init__(self, destination):
-        super().__init__(destination)
 
     def _extract_text(self):
         # open the PDF file - extract text
@@ -154,9 +126,10 @@ class PDFExtractor(BaseSource):
 #     print('bold:', book.font_list[text_cell_xf.font_index].bold)
 # """
 
-class XLSXExtractor(BaseSource):
+class XLSXExtractor():
     def __init__(self, destination):
-        super().__init__(destination)
+        self._destination = destination
+        pass
 
     def _extract_text(self):
         pass
@@ -178,49 +151,44 @@ class XLSXExtractor(BaseSource):
             first_sheet = book.sheet_by_index(idx)
             df_building = False
             df = pd.DataFrame
-            df = df()
-            if df.empty:
-                print("dobre zalozenie")
             columns = []
-            file_object = open(f"test_{idx}.txt", 'a')
+            file_object = open(f"{first_sheet.name}_{idx}.txt", 'a')
             for row_idx in range(first_sheet.nrows):
                 row = first_sheet.row(row_idx)
                 if 'text' or 'number' in str(row):
                     # print(str(row))
                     if all(x in 'text' for x in str(row)) or \
-                            ('Lp.' in str(row)) and not df_building:  # jeśli tekst jest we wszystkich komórkach w wierszu
+                            ('Lp.' in str(
+                                row)) and not df_building:  # jeśli tekst jest we wszystkich komórkach w wierszu
                         columns = [x.value for x in row]
                         df = df(columns=columns)
                         print(df)
                         df_building = True
                         continue
-                    # if df_building and ('number' in str(row)):
-                    if df_building:
+                    if df_building and ('number' in str(row)):
                         data = {name: x.value for name, x in zip(columns, row)}
                         df = df.append(data, ignore_index=True)
-                        print(df)
                         continue
-                    df_building = False
-                    if not df.empty:
-                        df.to_csv(f"test_{idx}_{row_idx}.csv", index=False, encoding="utf-8")
+                    if df_building:
+                        df.to_csv(f"{first_sheet.name}_{idx}_{row_idx}.csv", index=False, encoding="utf-8")
+                        df_building = False
                     for el in row:
-                        print(el)
-                        if el.value is not None or el.value is not "":
+                        if str(el.value) is not None or str(el.value) is not '':
                             print(str(el.value))
                             file_object.write(str(el.value))
                             file_object.write("\n")
-                if not df.empty:
-                    df.to_csv(f"test_{idx}_{row_idx}.csv", index=False, encoding="utf-8")
                 df_building = False
             file_object.close()
-
-
 
 
 if __name__ == '__main__':
     # ext = PDFExtractor("")
     # ext.process()
     ext = XLSXExtractor(
-        "D:/PyCharm_projects/DataEngineering/WEB_DEVELOPMENT/PROJEKTY_WEJŚCIOWE_DO_PRACY/HTA-consulting/task/data/in/03_formularz cenowy_647d60f3d047864138da4377746cd23f7c2013276a80eabfe715a847fc3f5099.xls")
+        "D:/PyCharm_projects/DataEngineering/WEB_DEVELOPMENT/PROJEKTY_WEJŚCIOWE_DO_PRACY/HTA-consulting/task/data/in/"
+        # "0070-19%20zmienione%203%2c%205%2c%208%2c%209%20i%20nowy%20p.%2012%20formularz%20cenowy_e467b2d3c6d0a01f0a7a7d81aee8c11c5690c4547b7304dfaafb1cabdaa2df4e.xlsx"
+        # "04. załącznik nr 1a do swz - formularz cenowy_.xlsx"
+        "03_formularz cenowy_647d60f3d047864138da4377746cd23f7c2013276a80eabfe715a847fc3f5099.xls"
+    )
     ext.process()
     print(__package__)
