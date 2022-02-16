@@ -1,36 +1,5 @@
-import pyspark
-from pyspark.sql.types import IntegerType
-from pyspark.sql import SparkSession
 import logging
 import logging.config
-
-from abc import ABC, abstractmethod
-
-from pathlib import Path
-
-DATA_DIR = Path(__file__).parent / "data"  # stores directory of our data files
-
-
-def collect_files(pattern):  # string pattern we want to search for
-    # DATA_DIR.glob(pattern)  # search for this pattern in data directory
-    # glob() returns generator
-    return list(DATA_DIR.glob(pattern))
-
-
-class AbstractAdder(ABC):
-    @abstractmethod
-    def add(self, value1, value2):
-        pass
-
-
-class ConcreteAdder(AbstractAdder):
-    def add(self, value1, value2):
-        return value1 + value2
-
-
-def AddExecuter(AbstractAdder):
-    return AbstractAdder.add(1, 2)
-
 
 from datetime import datetime
 from enum import Enum
@@ -40,7 +9,6 @@ import inotify.adapters
 import os
 import pytesseract
 import shutil
-import sys
 
 
 class FileState(Enum):
@@ -71,8 +39,6 @@ class FileHandler:
                 self._created_handler(path)
             if path in self._files:
                 del self._files[path]
-    # print(event,path)
-
 
 class JPEGHandler:
     """Handler for the creation of a new JPEG"""
@@ -120,12 +86,7 @@ def watch(folder, handler):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("inbox", help="Folder to watch for new images")
-    parser.add_argument("outbox", help="Folder for processed images")
-    args = parser.parse_args()
 
-    print(f"Watching {args.inbox} for files; sending results to {args.outbox}")
 
     handler = FileHandler(is_jpg, JPEGHandler(args.outbox))
     watch(args.inbox, handler)

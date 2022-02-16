@@ -5,8 +5,9 @@ bolts in place.
 
 # Extract
 Factory pattern - różne źródła.
+Wszystkie dane które można wyciągnąć łatwo z tabeli -> idą od razu do df
+Pozostałe dane z tego pliku idą do .h5 (sprowadzić wszystkie rodzaje danych do wspólnego formatu)
 TODO: detekcja formatu
-      
 
 # Transform
 - most of subjects/sections in csv files mają czcionkę >= 11 oraz pogrubone
