@@ -178,7 +178,11 @@ class XLSXExtractor(BaseSource):
             first_sheet = book.sheet_by_index(idx)
             df_building = False
             df = pd.DataFrame
+            df = df()
+            if df.empty:
+                print("dobre zalozenie")
             columns = []
+            file_object = open(f"test_{idx}.txt", 'a')
             for row_idx in range(first_sheet.nrows):
                 row = first_sheet.row(row_idx)
                 if 'text' or 'number' in str(row):
@@ -186,19 +190,29 @@ class XLSXExtractor(BaseSource):
                     if all(x in 'text' for x in str(row)) or \
                             ('Lp.' in str(row)) and not df_building:  # jeśli tekst jest we wszystkich komórkach w wierszu
                         columns = [x.value for x in row]
-                        df = pd.DataFrame(columns=columns)
+                        df = df(columns=columns)
+                        print(df)
                         df_building = True
                         continue
                     # if df_building and ('number' in str(row)):
                     if df_building:
                         data = {name: x.value for name, x in zip(columns, row)}
                         df = df.append(data, ignore_index=True)
+                        print(df)
                         continue
                     df_building = False
-                    # print(row)
-                print(df)
-                df.to_csv(f"test_{idx}_{row_idx}.csv", index=False, encoding="utf-8")
+                    if not df.empty:
+                        df.to_csv(f"test_{idx}_{row_idx}.csv", index=False, encoding="utf-8")
+                    for el in row:
+                        print(el)
+                        if el.value is not None or el.value is not "":
+                            print(str(el.value))
+                            file_object.write(str(el.value))
+                            file_object.write("\n")
+                if not df.empty:
+                    df.to_csv(f"test_{idx}_{row_idx}.csv", index=False, encoding="utf-8")
                 df_building = False
+            file_object.close()
 
 
 
