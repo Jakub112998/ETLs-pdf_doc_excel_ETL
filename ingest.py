@@ -40,6 +40,7 @@ class FileHandler:
             if path in self._files:
                 del self._files[path]
 
+
 class JPEGHandler:
     """Handler for the creation of a new JPEG"""
 
@@ -75,36 +76,21 @@ def is_jpg(path):
     return ext.lower() in [".jpg", ".jpeg"]
 
 
-def watch(folder, handler):
-    """
-	Watch 'folder' for file system events, passing them to 'handler'
-	"""
-    i = inotify.adapters.Inotify()
-    i.add_watch(folder)
-    for (_, types, path, filename) in i.event_gen(yield_nones=False):
-        handler(types, os.path.join(path, filename))
-
-
-if __name__ == "__main__":
-
-
-    handler = FileHandler(is_jpg, JPEGHandler(args.outbox))
-    watch(args.inbox, handler)
-
-
 class Ingest:
     logging.config.fileConfig("resources/configs/logging.conf")  # by użyć tego pliku w innych
 
     # logach (z innych klas, deklaruję to jako zmienną klasy
-    def __init__(self, spark):
-        self.spark = spark  # przekazujemy spark session do ingest.py
+    def __init__(self, file):
+        self.file = file  # przekazujemy spark session do ingest.py
 
     def ingest_data(self):
         logger = logging.getLogger("Ingest")  # definiujemy którego loggera używam w tej klasie
         logger.info("Ingesting from csv")
-
+        # detect format
+        handler = FileHandler(is_jpg, JPEGHandler(args.outbox))
         # read file
-
+        # - what you can read easily - put into df
+        # - everything else put into .h5 file
         logger.info("DF created")
         logger.warning("DF created with warning")
         # return customer_df
