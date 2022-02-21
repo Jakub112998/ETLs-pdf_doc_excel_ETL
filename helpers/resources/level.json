@@ -1,112 +1,45 @@
 {
-  "dental": {
+  "1": {
     "plugins": [
-      "helpers.bizfind",
-      "helpers.europages",
-      "helpers.nfz",
-      "helpers.yelp"
+      "helpers.extractors.plugins.zip_files"
     ],
-    "sources": [
+    "pipeline": [
       {
-        "name": "yelp",
-        "url": ["https://www.yelp.com/search/snippet?find_desc=dentists&find_loc=Warsaw%2C%Poland&start=0&parent_request_id=dfcaae5fb7b44685&request_origin=user",
-        "https://www.yelp.com/search/snippet?find_desc=dentists&find_loc=Wroclaw%2C%Poland&start=0&parent_request_id=dfcaae5fb7b44685&request_origin=user",
-        "https://www.yelp.com/search/snippet?find_desc=dentists&find_loc=Gdansk%2C%Poland&start=0&parent_request_id=dfcaae5fb7b44685&request_origin=user"]
-      },
-      {
-        "name": "yellowpages",
-        "url": [
-          "https://www.yelp.com/search/snippet?find_desc=dentists&find_loc=Warsaw%2C%Poland&start=0&parent_request_id=dfcaae5fb7b44685&request_origin=user",
-          "https://www.yelp.com/search/snippet?find_desc=dentists&find_loc=Wroclaw%2C%Poland&start=0&parent_request_id=dfcaae5fb7b44685&request_origin=user",
-          "https://www.yelp.com/search/snippet?find_desc=dentists&find_loc=Gdansk%2C%Poland&start=0&parent_request_id=dfcaae5fb7b44685&request_origin=user"]
-      },
-      {
-        "name": "bizfind",
-        "url": [
-          "https://www.biznesfinder.pl/polska/lekarze%20-%20stomatolodzy?page="
-        ]
-      },
-      {
-        "name": "nfz",
-        "url": ""
-      },
-      {
-        "name": "europages",
-        "url": ""
+        "name": "zip"
       }
     ]
   },
-  "automation": {
+  "2": {
     "plugins": [
-      "helpers.automatyka",
-      "helpers.bizfind",
-      "helpers.europages",
-      "helpers.automation",
-      "helpers.crunchbase",
-      "helpers.easyleadz",
-      "helpers.industrystock",
-      "helpers.sens2b-sensors"
+      "helpers.extractors.plugins.email_notification"
     ],
-    "sources": [
+    "pipeline": [
       {
-        "name": "bizfind",
-        "url": [
-          "https://www.biznesfinder.pl/polska/automatyka%20przemysłowa?page=",
-          "https://www.biznesfinder.pl/polska/elektrotechnika%20-%20usługi?page=",
-          "https://www.biznesfinder.pl/polska/budowlane%20usługi%20-%20elektroinstalacyjne?page=",
-          "https://www.biznesfinder.pl/polska/instalacje%20elektryczne%20-%20usługi?page=",
-          "https://www.biznesfinder.pl/polska/instalacje%20-%20kompleksowe%20usługi?page=",
-          "https://www.biznesfinder.pl/polska/informatyczne%20usługi?page=",
-          "https://www.biznesfinder.pl/polska/metale%20-%20obróbka%2C%20maszyny?page=",
-        ]
+        "name": "email"
+      }
+    ]
+  },
+  "3": {
+    "plugins": [
+      "helpers.extractors.plugins.load_to_postgres"
+    ],
+    "pipeline": [
+      {
+        "name": "db"
+      }
+    ]
+  },
+  "4": {
+    "plugins": [
+      "helpers.extractors.plugins.email_notification",
+      "helpers.extractors.plugins.load_to_postgres"
+    ],
+    "pipeline": [
+      {
+        "name": "email"
       },
       {
-        "name": "nfz",
-        "branch_number": "Wszystkie",
-        "serviceType": "07"
-      },
-      {
-        "name": "europages",
-        "url": [
-          "https://www.europages.co.uk/companies/industrial%20automation.html",
-          "https://www.europages.co.uk/companies/Engineering%20-%20industrial%20consultants/industrial%20automation.html"
-        ]
-      },
-      {
-        "name": "automation",
-        "url": [
-          "https://www.automation.com/en-us/featured-suppliers"
-        ]
-      },
-      {
-        "name": "crunchbase",
-        "url": [
-          "https://www.crunchbase.com/hub/europe-industrial-automation-companies"
-        ]
-      },
-      {
-        "name": "easyleadz",
-        "url": [
-          "https://www.easyleadz.com/lists/List-of-Industrial-Automation-Companies"
-        ]
-      },
-      {
-        "name": "industrystock",
-        "url": [
-          "https://www.industrystock.com/en/companies/Automatic-Control-Engineering/Automation-Accessories",
-          "https://www.industrystock.com/en/companies/Automatic-Control-Engineering/Automation-Systems",
-          "https://www.industrystock.com/en/companies/Automatic-Control-Engineering/Automations",
-          "https://www.industrystock.com/en/companies/Automatic-Control-Engineering/Control-Engineering",
-          "https://www.industrystock.com/en/companies/Automatic-Control-Engineering/Controller-2",
-          "https://www.industrystock.com/en/companies/Automatic-Control-Engineering/Process-Automation",
-          "https://www.industrystock.com/en/companies/Automatic-Control-Engineering"
-        ]
-      },
-      {
-        "name": "sens2b-sensors",
-        "url": [
-          "https://www.sens2b-sensors.com/companies/5"
-        ]
+        "name": "db"
       }
     ]
   }

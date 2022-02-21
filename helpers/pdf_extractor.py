@@ -1,16 +1,15 @@
 import logging
 import datetime
 import os
-from .. import factory
+from task.helpers import factory
 import pytesseract
 import shutil
 import tabula
-
+from task.helpers.base import BasePathManager
 
 class PDFExtractor():
     def __init__(self, destination):
-        self._destination = destination
-        pass
+        super().__init__(destination)
 
     def _extract_text(self):
         # open the PDF file - extract text
@@ -76,6 +75,7 @@ class PDFExtractor():
     def process(self):
         print("PDF processing")
 
+
 def main(logger, target_path, base_url, start_page, end_page):
     industry = target_path.split("/")
     industry = industry[len(industry) - 2]
@@ -94,41 +94,22 @@ def main(logger, target_path, base_url, start_page, end_page):
         #         print(e)
 
 
-class BizfindBot:  # ten obiekt jest tworzony przy ładowaniu pluginów
-    name: str = ''  # parametr z jsona
-    url: str = ''  # parametr z jsona
+if __name__ == "__main__":
+    now = datetime.datetime.now()
+    scrape_date = f"{now.year}-{now.month}-{now.day}"
 
-    def scrape(self, industry="automation", start_page=1, end_page=2) -> None:
-        now = datetime.datetime.now()
-        scrape_date = f"{now.year}-{now.month}-{now.day}"
+    # z env variables:
+    parent_dir = "D:/PyCharm_projects/DataEngineering/PROJEKTY/ProjektDlaTaty_v_final/data/"
 
-        # z env variables:
-        self.name = "biznesfinder"
-        parent_dir = "D:/PyCharm_projects/DataEngineering/PROJEKTY/ProjektDlaTaty_v_final/data/"
+    directory = f"{scrape_date}/{industry}/{self.name}/"
+    target_path = parent_dir + directory
 
-        directory = f"{scrape_date}/{industry}/{self.name}/"
-        target_path = parent_dir + directory
+    logging.config.fileConfig(parent_dir + "logging.conf")
+    myLogger = logging.getLogger('simpleExample')
+    fh = logging.FileHandler(parent_dir + 'scraping_history.logs')
+    myLogger.addHandler(fh)
 
-        logging.config.fileConfig(parent_dir + "logging.conf")
-        myLogger = logging.getLogger('simpleExample')
-        fh = logging.FileHandler(parent_dir + 'scraping_history.logs')
-        myLogger.addHandler(fh)
-
-        # check_if_page_range_was_already_scraped(logger=myLogger, start_page=start_page, end_page=end_page)
-
-        if not os.path.exists(target_path):
-            os.makedirs(target_path)
-        print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        main(logger=myLogger, target_path=target_path, base_url=self.url, start_page=start_page, end_page=end_page)
-
-        logging.shutdown()
-
-
-def register() -> None:
-    factory.register("bizfind", BizfindBot)
-
-
-# if __name__ == "__main__":
-    # ob = BizfindBot()
-    # ob.scrape()
-    # detect_tekst()
+    target_path = "/task/data/in/04. załącznik nr 1a do swz - formularz cenowy_.xlsx"
+    if not os.path.exists(target_path):
+        os.makedirs(target_path)
+    main(logger=myLogger, target_path=target_path)

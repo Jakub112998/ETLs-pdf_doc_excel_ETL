@@ -2,12 +2,14 @@
 
 from typing import Any, Callable
 
-from .class_source import BaseSource
-
-character_creation_funcs: dict[str, Callable[..., BaseSource]] = {}
+from .base import SourceManager
 
 
-def register(character_type: str, creator_fn: Callable[..., BaseSource]) -> None:
+# Callable[..., BaseScenario]  # requires no arguments, returns BaseScenario object
+character_creation_funcs: dict[str, Callable[..., SourceManager]] = {}
+
+
+def register(character_type: str, creator_fn: Callable[..., SourceManager]) -> None:
     """Register a new game character type."""
     character_creation_funcs[character_type] = creator_fn
 
@@ -17,7 +19,7 @@ def unregister(character_type: str) -> None:
     character_creation_funcs.pop(character_type, None)
 
 
-def create(arguments: dict[str, Any]) -> BaseSource:
+def create(arguments: dict[str, Any]) -> SourceManager:
     """Create a game character of a specific type, given JSON data."""
     args_copy = arguments.copy()
     character_type = args_copy.pop("type")
