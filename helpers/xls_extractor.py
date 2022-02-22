@@ -172,7 +172,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     """
-    python xls_extractor.py ../data/in/b.xlsx
+    python xls_extractor.py ../data/input/b.xlsx
     """
 
     main(target_path=args.input)
