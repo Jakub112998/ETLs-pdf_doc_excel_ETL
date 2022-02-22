@@ -10,8 +10,8 @@ pip install -r requirements.txt
 - it has been tested on data/input/a.xlsx and b.xlsx
 - go to helpers/xls_extractor.py
 - run: 
-	python xls_extractor.py /data/input/a.xlsx
-	python xls_extractor.py /data/input/b.xlsx
+	- python xls_extractor.py /data/input/a.xlsx
+	- python xls_extractor.py /data/input/b.xlsx
 - this script is using helpers and helpers/resources folder.
 - it automatically detects headers from tables and creates df of it. In many cases there are 1-4 letter mistakes in headers (eg. x in place of +) so script is able to detect these small differences and assume that if there are up to 4 characters differece we can treat these headers as the same. In b.xlsx there are 2 different tables (they are different by 1 column), as an output there are 2 dfs.
 - it detects data rows and differenciates it from data that is in the file but not in table structure and puts it into seperate .txt file
