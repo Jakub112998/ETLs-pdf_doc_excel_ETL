@@ -1,6 +1,6 @@
 import logging
 import xlrd
-from base import BasePathManager
+from base import OutputManager, BaseOutputManager, CustomOutputManager
 import pandas as pd
 from typing import List, Union, Type
 import argparse
@@ -11,7 +11,7 @@ from dataclasses import dataclass, make_dataclass
 import re
 
 
-class XLSXExtractor(BasePathManager):
+class XLSXExtractor():
     """
     Ta klasa odpowiada za nazewnictwo wewnątrz folderu stworzonego za pomocą base_extractor.py:
     - każdy arkusz pliku .xlsx posiada własny zestaw plików .csv oraz .txt
@@ -24,9 +24,10 @@ class XLSXExtractor(BasePathManager):
     IF new header not detected -> append to the last DF
     """
 
-    def __init__(self, destination):
-        super().__init__(destination)
-        self.destination = destination
+    def __init__(self, path_manager: OutputManager):
+        self.path_manager = path_manager
+        # print("input", self.path_manager.input)
+        # print("out", self.path_manager.base_path)
 
     def process(self) -> List[Union[pd.DataFrame, Type[pd.DataFrame]]]:
         """
@@ -34,16 +35,15 @@ class XLSXExtractor(BasePathManager):
 
         todo: jeśli nie budujemy df a są dane tekstowe lub numeryczne to żeby ich nie tracić to zapisuję do pliku txt do przetworzenia
         """
-        book = xlrd.open_workbook(self.destination)
+        book = xlrd.open_workbook(self.path_manager.input)
         columns = []
         df_concatenated = []
         data = []
-        part_name = 0
         for idx in range(len(book.sheets())):
             first_sheet = book.sheet_by_index(idx)
             print(first_sheet.name)
             df_building = False
-            # file_object = open(f"{first_sheet.name}_{idx}.txt", 'a')
+            file_object = open(f"{self.path_manager.base_path}/{first_sheet.name}_{idx}.txt", 'a')
             for row_idx in range(first_sheet.nrows):
                 row = first_sheet.row(row_idx)
 
@@ -144,20 +144,21 @@ class XLSXExtractor(BasePathManager):
                     #   do pliku txt do późniejszego przetworzenia
                     elif not df_building:
                         # zapisz plik .txt z pozostałymi danymi
-                        # for el in row:
-                        #     if str(el.value) is not None or str(el.value) is not '':
-                        #         file_object.write(str(el.value))
-                        #         file_object.write("\n")
-                        pass
+                        for el in row:
+                            if str(el.value) is not None or str(el.value) is not '':
+                                file_object.write(str(el.value))
+                                # file_object.write("\n")
+                        continue
                 df_building = False
         # todo: df'my które mają te same typy danych dla odpowiadających kolumn zbieram w jeden df
         # todo: aggregate pozycje z takim samym opisem / nazwą.
+        for i, el in enumerate(df_concatenated):
+            print(el[1].to_csv(f"{self.path_manager.base_path}/Part_{i}.csv", index=False, encoding="utf-8"))
         return df_concatenated
 
 
 def main(target_path):
-    # print(target_path)
-    handler = XLSXExtractor(destination=target_path)
+    handler = XLSXExtractor(BaseOutputManager(target_path))
     df = handler.process()
     print("output **************************")
     for el in df:
