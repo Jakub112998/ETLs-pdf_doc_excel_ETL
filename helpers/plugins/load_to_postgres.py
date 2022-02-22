@@ -30,24 +30,3 @@ async def load(zip_file_path=""):
     # create_views(args)
 
 
-class DentalPoland(Base):
-    """Imported xml data from ndw datasource"""
-    __tablename__ = f"importer_trafficspeed"
-    id = Column(Integer, primary_key=True, index=True, autoincrement='auto')
-    measurement_site_reference = Column(String(length=255), index=True)
-    measurement_time = Column(TIMESTAMP, index=True)
-    type = Column(String)
-    index = Column(String, nullable=True)
-    data_error = Column(Boolean, default=False)
-    scraped_at = Column(TIMESTAMP, index=True)
-
-    flow = Column(Integer, nullable=True)
-
-    speed = Column(Float, nullable=True)
-    number_of_input_values_used = Column(Integer, nullable=True)
-    standard_deviation = Column(Float, nullable=True)
-
-    stadsdeel = Column(String, index=True)
-    buurt_code = Column(String, index=True)
-
-    length = Column(Integer)

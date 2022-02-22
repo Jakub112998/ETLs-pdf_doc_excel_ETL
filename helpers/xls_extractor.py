@@ -11,21 +11,6 @@ from dataclasses import dataclass, make_dataclass
 import re
 
 
-# def datatypes_conversion(value: str):
-# """
-# text: 'aaa' lub number: 12.2 i konwertuje wartość wyjściową odpowiednio na:
-# str(aaa) oraz float(12.2)
-# """
-# print(type(value))
-# if any(c.isalpha() for c in value):
-#     return str(value)
-# elif '.' in value:
-#     if '.0' or '. 0' in value:
-#         return int(value)
-#     return float(value)
-# return None
-
-
 class XLSXExtractor(BasePathManager):
     """
     Ta klasa odpowiada za nazewnictwo wewnątrz folderu stworzonego za pomocą base_extractor.py:
@@ -75,8 +60,8 @@ class XLSXExtractor(BasePathManager):
                         #  należy takie przypadki wynaleźć oraz dopisać do resources/similar_words.py
                         # if df_concatenated is empty -> create first one
                         if not df_concatenated:
-                            print("buduję pierwszą tabelę")
-                            continue
+                            # print("buduję pierwszą tabelę")
+                            pass
                         # if at least one df in df_concatenated exists -> select to which df to add
                         df_id = header_detection(df_concatenated, columns)
                         # if found to which df to add
@@ -101,19 +86,19 @@ class XLSXExtractor(BasePathManager):
                                 # print(x.value)
                                 # print(type(x.value))
                                 data_row.append(x.value)
-                                continue
                             elif type(x.value) == float:
                                 # print("== float")
                                 # print(x.value)
                                 # print(type(x.value))
-                                if x.value - int(x.value) == 0.0:  # wtedy wiadomo, że to int
+                                if float(x.value - int(x.value)) == 0.0:  # wtedy wiadomo, że to int
                                     # print(int(x.value))
                                     data_row.append(int(x.value))
                                 else:
                                     # print(x.value - int(x.value))
-                                    data_row.append(x.value - int(x.value))
-                                continue
+                                    data_row.append(float(x.value - int(x.value)))
+                            continue
                         data.append(data_row)
+                        continue
                     # jeśli przejrzeliśmy cały plik xlsx albo znaleźliśmy nowy header -> zapisz df
                     if df_building:
                         # Clean and organize new data
@@ -136,7 +121,10 @@ class XLSXExtractor(BasePathManager):
                             assert out
 
                             # df appending is not inplace operation - need to =
-                            df_concatenated[df_id][1] = df_concatenated[df_id][1].append(pd.DataFrame(data, columns=columns))
+                            df_concatenated[df_id][1] = df_concatenated[df_id][1].append(
+                                pd.DataFrame(data, columns=columns),
+                                ignore_index=True
+                            )
                             print("Powiększona tabela: ", df_concatenated[df_id][1])
 
                         # if df with such header not found -> create a new one
@@ -151,21 +139,17 @@ class XLSXExtractor(BasePathManager):
                             print("Utworzona tabela:\n", df_concatenated[-1][1])
                             # df.to_csv(f"Part_{part_name}_{first_sheet.name}_{idx}_{row_idx}.csv", index=False,
                             # encoding="utf-8")
-
+                        data = []
                     # todo: jeśli są dane tekstowe poza tabelą to żeby ich nie tracić to zapisuję
                     #   do pliku txt do późniejszego przetworzenia
-                    """
                     elif not df_building:
                         # zapisz plik .txt z pozostałymi danymi
-                        print("------txt building--------")
-                        print(row)
-                        for el in row:
-                            if str(el.value) is not None or str(el.value) is not '':
-                                file_object.write(str(el.value))
-                                file_object.write("\n")
-                    """
+                        # for el in row:
+                        #     if str(el.value) is not None or str(el.value) is not '':
+                        #         file_object.write(str(el.value))
+                        #         file_object.write("\n")
+                        pass
                 df_building = False
-                data = []
         # todo: df'my które mają te same typy danych dla odpowiadających kolumn zbieram w jeden df
         # todo: aggregate pozycje z takim samym opisem / nazwą.
         return df_concatenated
@@ -175,7 +159,7 @@ def main(target_path):
     print(target_path)
     handler = XLSXExtractor(destination=target_path)
     df = handler.process()
-    print("DF ******************================================")
+    print("DF **************************")
     for el in df:
         print(el[0])
         print(el[1].columns)
@@ -187,7 +171,8 @@ if __name__ == "__main__":
     parser.add_argument("input", help="Choose input folder directory")
     args = parser.parse_args()
 
-    path = "D:/PyCharm_projects/DataEngineering/WEB_DEVELOPMENT\PROJEKTY_WEJŚCIOWE_DO_PRACY/HTA-consulting/task/data" \
-           "/in/arkusz%20asortymentowo%20cenowy_64389c44f0c9ce5227d504ac60741335824e50b223657e8eec75981cd4337eef.xlsx "
+    """
+    python xls_extractor.py ../data/in/b.xlsx
+    """
 
     main(target_path=args.input)

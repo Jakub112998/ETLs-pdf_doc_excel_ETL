@@ -40,7 +40,7 @@ def regex_part_name_row(row: str) -> bool:
 
 
 def regex_header_row(row: List[str]) -> bool:
-    if any(word in row for word in ["Lp", "Nr poz."]):
+    if any(word in row for word in ["Lp", "L.p.", "Nr poz."]):
         return True
     return False
 
