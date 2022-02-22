@@ -8,7 +8,6 @@ def nan_generator(data: List, types_dict: dict) -> List:
     Teraz jako NaN value w kolumnie int mamy 0 a w kolumnie float mamy 0.0
     """
     for row_id, row in enumerate(data):
-        print(row)
         for col_id, col_value in enumerate(row):
             if col_value == '':  # NaN value dla typu str
                 if types_dict[col_id] == int:

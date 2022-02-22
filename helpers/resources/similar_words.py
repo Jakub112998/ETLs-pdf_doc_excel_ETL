@@ -40,7 +40,7 @@ def header_detection(list_df: List[pd.DataFrame], columns: List) -> int:
         if len(el) > 0:
             # ile jest różniących się kolumn - trzeba podmienić wszystkie by dodać do jednego z dotychczasowych df
             diff_num = len(el)
-            print(diff_num)
+            # print(diff_num)
             how_many_replaced = 0
             for e in el:  # przeszukuję każdą różniącą się kolumnę
                 tmp_e = '%s' % e[1]
@@ -54,7 +54,7 @@ def header_detection(list_df: List[pd.DataFrame], columns: List) -> int:
                             #       col2[e[0]],
                             #       "\n-----------------")
                             difference = list(set(value).symmetric_difference(set(col2[e[0]])))
-                            print(difference)
+                            # print(difference)
                             # todo: implementacja podmieniania tutaj
                             #  narazie robię tak, że jak różni się tylko 4 znakami jakaś nazwa kolumny
                             #  to traktuj je jako takie same
@@ -69,9 +69,9 @@ def header_detection(list_df: List[pd.DataFrame], columns: List) -> int:
                 return df_id
         # jeśli oba nagłówki są takie same
         elif len(set(col1).intersection(col2)) == len(col1):
-            print(f"Dodaję do identycznej, istniejącej już tabeli {df_id}")
+            # print(f"Dodaję do identycznej, istniejącej już tabeli {df_id}")
             return df_id
-    print("Nie znaleziono takigo nagłówka -> powstanie nowy dataframe z tymi kolumnami:\n", columns)
+    # print("Nie znaleziono takigo nagłówka -> powstanie nowy dataframe z tymi kolumnami:\n", columns)
     return -1
 
 

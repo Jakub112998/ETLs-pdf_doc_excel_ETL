@@ -105,15 +105,15 @@ class XLSXExtractor(BasePathManager):
                         df_id = header_detection(df_concatenated, columns)
                         # jeśli wykryto, że taki df już istnieje
                         if df_id is not -1:
-                            print("TABELA ", df_id, "\n", df_concatenated[df_id][1])
-                            print("Do niej dodaję te dane:")
+                            # print("TABELA ", df_id, "\n", df_concatenated[df_id][1])
+                            # print("Do niej dodaję te dane:")
                             # sprawdzam nowe dane, które chce do niego dodać & update data types
                             df_concatenated[df_id][0] = datatypes_check(data, df_concatenated[df_id][0])
                             # wiemy jakie typy udało się zadeklarować dla każdej z kolumn więc konwertujemy wszystkie
                             # NaN values na odpowiedni typ dla danej kolumny
                             data = nan_generator(data, df_concatenated[df_id][0])
                             # append list of lists to existing df
-                            print("Dodaję DF: ", pd.DataFrame(data, columns=columns))
+                            # print("Dodaję DF: ", pd.DataFrame(data, columns=columns))
 
                             # compare 2 lists of headers - they have to be the same for df to be appended
                             out = lists_comparator(list(columns), list(df_concatenated[df_id][1].columns))
@@ -125,18 +125,18 @@ class XLSXExtractor(BasePathManager):
                                 pd.DataFrame(data, columns=columns),
                                 ignore_index=True
                             )
-                            print("Powiększona tabela: ", df_concatenated[df_id][1])
+                            # print("Powiększona tabela: ", df_concatenated[df_id][1])
 
                         # if df with such header not found -> create a new one
                         elif df_id == -1:
-                            print("Tworzę nową tabelę z tych danych:")
+                            # print("Tworzę nową tabelę z tych danych:")
                             # create new types_dict for this data frame
                             types_dict = datatypes_check(data)
                             data = nan_generator(data, types_dict)
                             # create a new df
-                            print("Dodaję DF: ", pd.DataFrame(data, columns=columns))
+                            # print("Dodaję DF: ", pd.DataFrame(data, columns=columns))
                             df_concatenated.append([types_dict, pd.DataFrame(data, columns=columns)])
-                            print("Utworzona tabela:\n", df_concatenated[-1][1])
+                            # print("Utworzona tabela:\n", df_concatenated[-1][1])
                             # df.to_csv(f"Part_{part_name}_{first_sheet.name}_{idx}_{row_idx}.csv", index=False,
                             # encoding="utf-8")
                         data = []
@@ -156,10 +156,10 @@ class XLSXExtractor(BasePathManager):
 
 
 def main(target_path):
-    print(target_path)
+    # print(target_path)
     handler = XLSXExtractor(destination=target_path)
     df = handler.process()
-    print("DF **************************")
+    print("output **************************")
     for el in df:
         print(el[0])
         print(el[1].columns)
